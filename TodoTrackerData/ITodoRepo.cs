@@ -10,7 +10,7 @@ namespace TodoTrackerData
 {
    public interface ITodoRepo
     {
-        List<Todo> GetTodos();
+        List<Todo> GetActiveTodos();
 
         Todo GetSingleTodo(int TodoID);
 
