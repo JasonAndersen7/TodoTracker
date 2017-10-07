@@ -17,6 +17,7 @@ namespace TodoTrackerModels
         public string Assignee { get; set; }
         public DateTime DueDate { get; set; }
         public int IsCompleted { get; set; }
+        public string TodoDesc { get; set; }
 
 
     }

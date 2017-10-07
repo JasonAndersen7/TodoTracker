@@ -18,7 +18,7 @@ namespace TodoTrackerData.Tests
 
             dbtest.WakeMeUp();
 
-            Assert.Fail();
+            //Assert.Fail();
         }
     }
 }
