@@ -40,13 +40,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ITodoTrackers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TodoTrackers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Models\TodoTrackerModels.csproj">
       <Project>{19be5eb8-e422-4260-9582-914387b9033b}</Project>
       <Name>TodoTrackerModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TodoTrackerData\TodoTrackerData.csproj">
+      <Project>{311e452a-410d-49c1-88f6-b2f3ddc4e414}</Project>
+      <Name>TodoTrackerData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TodoTrackerModels;
 
-using System.Text;
+
 using System.Data;
 using System.Data.SQLite;
 using System.Configuration;
@@ -17,6 +17,11 @@ namespace TodoTrackerData
     {
         IDbConnection sqlConn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["ToDoDB"].ConnectionString);
 
+
+        /// <summary>
+        /// Used to get only all Active Todos, those who do not have the IsCompleted Flag set to true
+        /// </summary>
+        /// <returns></returns>
         public  List<Todo> GetActiveTodos()
         {
             //get all todos but don't get ones that are completed
@@ -27,6 +32,11 @@ namespace TodoTrackerData
             return myTodos;
         }
 
+        /// <summary>
+        /// Get a Single todo Record
+        /// </summary>
+        /// <param name="TodoID">The unique id of the todo</param>
+        /// <returns></returns>
         public Todo GetSingleTodo(int TodoID)
         {
             string SqlString = "Select TodoID, Requester, Assignee, DueDate, IsCompleted, TodoDesc from TODO where TODoID = " + TodoID;
@@ -38,18 +48,23 @@ namespace TodoTrackerData
             return myTodo;
         }
 
-        public bool AddTodo(Todo t)
+        /// <summary>
+        /// Add a Todo 
+        /// </summary>
+        /// <param name="newTodo"></param>
+        /// <returns></returns>
+        public bool AddTodo(Todo newTodo)
         {
             try
             {
                 //TODO Research Dapper commands for Inserts
                 StringBuilder commandText = new StringBuilder();
                 commandText.Append("INSERT INTO Todo ( Requester, Assignee, DueDate, TodoDesc, IsCompleted ) VALUES ('");
-                commandText.Append(t.Requester + "', '");
-                commandText.Append(t.Assignee + "', '");
-                commandText.Append(t.DueDate.ToString() + "', '");
-                commandText.Append(t.TodoDesc + "', '");
-                commandText.Append(t.IsCompleted + "')");
+                commandText.Append(newTodo.Requester + "', '");
+                commandText.Append(newTodo.Assignee + "', '");
+                commandText.Append(newTodo.DueDate.ToString() + "', '");
+                commandText.Append(newTodo.TodoDesc + "', '");
+                commandText.Append(newTodo.IsCompleted + "')");
                     
                 
                 // Ensure we have a connection
@@ -71,6 +86,11 @@ namespace TodoTrackerData
             {
 
                 throw;
+            }
+            finally
+            {
+                //good practice to close your db connections
+                sqlConn.Close();
             }
             //the command succeeded
             return true;
@@ -104,36 +124,45 @@ namespace TodoTrackerData
                 }
 
                 sqlConn.Execute(commandText.ToString());
+
+                
             }
             catch (Exception)
             {
 
                 throw;
             }
+            finally
+            {
+                //good practice to close your db connections
+                sqlConn.Close();
+            }
             //the command succeeded
             return true;
+
+            
         }
 
 
         /// <summary>
         /// Used to update one record
         /// </summary>
-        /// <param name="t"></param>
+        /// <param name="updateTodo"></param>
         /// <returns></returns>
-        public bool Update(Todo t)
+        public bool Update(Todo updateTodo)
         {
             try
             {
                 //TODO Research Dapper commands for Updates
                 StringBuilder commandText = new StringBuilder();
                 commandText.Append("UPDATE Todo SET "); 
-                  commandText.Append(string.Format("Requester = '{0}',", t.Requester));
-                commandText.Append(string.Format(" Assignee = '{0}',", t.Assignee));
-                commandText.Append(string.Format(" DueDate = '{0}',", t.DueDate.ToString()));
-                commandText.Append(string.Format(" IsCompleted = '{0}',", t.IsCompleted));
-                commandText.Append(string.Format(" TodoDesc = '{0}'", t.TodoDesc));
+                  commandText.Append(string.Format("Requester = '{0}',", updateTodo.Requester));
+                commandText.Append(string.Format(" Assignee = '{0}',", updateTodo.Assignee));
+                commandText.Append(string.Format(" DueDate = '{0}',", updateTodo.DueDate.ToString()));
+                commandText.Append(string.Format(" IsCompleted = '{0}',", updateTodo.IsCompleted));
+                commandText.Append(string.Format(" TodoDesc = '{0}'", updateTodo.TodoDesc));
                 commandText.Append("WHERE ");
-                commandText.Append(" TODOID = " + t.TodoID);
+                commandText.Append(" TODOID = " + updateTodo.TodoID);
 
                 // Ensure we have a connection
                 if (sqlConn == null)
@@ -155,11 +184,20 @@ namespace TodoTrackerData
 
                 throw;
             }
+            finally
+            {
+                //good practice to close your db connections
+                sqlConn.Close();
+            }
             //the command succeeded
             return true;
         }
 
-
+        /// <summary>
+        /// Set a Todo to complete 
+        /// </summary>
+        /// <param name="TodoID">The unique ID of the Todo</param>
+        /// <returns></returns>
         public bool Complete(int TodoID)
         {
             try
@@ -191,6 +229,12 @@ namespace TodoTrackerData
             {
 
                 throw;
+            }
+
+            finally
+            {
+                //good practice to close your db connections
+                sqlConn.Close();
             }
             //the command succeeded
             return true;

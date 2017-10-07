@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TodoTrackerModels;
+using TodoTrackerBiz;
+
 
 namespace TodoTracker.Controllers
 {
@@ -21,13 +23,43 @@ namespace TodoTracker.Controllers
         /// Get All Todos  
         /// </summary>  
         /// <returns></returns>  
-        //public JsonResult Get_AllTodos()
-        //{
+        public JsonResult GetAllActive()
+        {
+            ITodoTrackers todos = new TodoTrackers();
 
-        //    //    return Json(, JsonRequestBehavior.AllowGet);
-        //    return Json()
+            List<Todo> activeTodos = new List<Todo>();
 
-        //}
+            try
+            {
+                 activeTodos =todos.GetActiveTodos();
+            }
+            catch 
+            {
+                throw;
+            }
+
+            return Json(activeTodos, JsonRequestBehavior.AllowGet);  
+            //    return Json(, JsonRequestBehavior.AllowGet);
+
+        }
+
+        // GET: Get Single Todo  
+        [HttpGet]
+        public JsonResult GetActiveTodo(int id)
+        {
+            object todo = null;
+            try
+            {
+            
+                ITodoTrackers todoTracker = new TodoTrackers();
+
+                todo = todoTracker.GetSingleTodo(id);
+            }
+            catch
+            { }
+
+            return Json(todo, JsonRequestBehavior.AllowGet);
+        }
 
     }
 
