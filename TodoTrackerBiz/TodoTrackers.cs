@@ -65,8 +65,21 @@ namespace TodoTrackerBiz
 
         public bool AddTodo(Todo t)
         {
+            bool result = false;
+            try
+            {
+                ITodoRepo todoRepo = new TodoRepo();
 
-            return true;
+                result = todoRepo.AddTodo(t);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return result;
         }
 
         public bool Delete(int TodoID)
@@ -90,8 +103,23 @@ namespace TodoTrackerBiz
 
         public bool Update(Todo t)
         {
+            bool result = false;
 
-            return true;
+            try
+            {
+                ITodoRepo todoRepo = new TodoRepo();
+
+                result = todoRepo.Update(t);
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return result;
         }
 
         public bool Complete(int TodoID)

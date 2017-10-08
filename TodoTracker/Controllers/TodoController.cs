@@ -79,7 +79,7 @@ namespace TodoTracker.Controllers
         }
 
         // Udpate to Completed
-        [HttpPost]
+        [HttpDelete]
         public JsonResult CompleteTodo(int id)
         {
             bool result = false;
@@ -94,6 +94,77 @@ namespace TodoTracker.Controllers
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        // Udpate to Completed
+        [HttpPost]
+        public JsonResult UpdateTodo(Todo model)
+        {
+            bool result = false;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
+
+                    result = todoTracker.Update(model);
+                    return Json(new
+                    {
+                        success = result
+                    });
+                }
+                catch
+                { } 
+            }
+            return Json(new
+            {
+                success = false,
+                errors = ModelState.Keys.SelectMany(i => ModelState[i].Errors).Select(m => m.ErrorMessage).ToArray()
+            });
+        }
+
+        public ActionResult UpdateTodo()
+        {
+            return View();
+        }
+
+        // Udpate to Completed
+        [HttpPost]
+        public JsonResult AddTodo(Todo model)
+        {
+            bool result = false;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
+
+                    result = todoTracker.AddTodo(model);
+
+                    if (result)
+                    {
+                        return Json(new
+                        {
+                            success = result
+                        });
+                    }
+                }
+                catch
+                { } 
+            }
+
+            return Json(new
+            {
+                success = false,
+                errors = ModelState.Keys.SelectMany(i => ModelState[i].Errors).Select(m => m.ErrorMessage).ToArray()
+            });
+        }
+
+        public ActionResult AddTodo()
+        {
+            return View();
+        }
+
+
 
 
     }

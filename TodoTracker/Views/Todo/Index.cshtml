@@ -13,42 +13,40 @@
         {{message}}
     </div>
     <hr />
-    @*<form name="frmTodo" novalidate>
+    <form name="frmTodo" novalidate>
             <div>
-                <input type="hidden" ng-model="custModel.Id" name="cid" />
+                <input type="hidden" ng-model="todoModel.Id" name="todoID" />
             </div>
             <div>
                 <label for="email">
                     Todo Description
                 </label>
-                <input type="text" ng-model="custModel.CustName" name="cname" placeholder="" requiredng-minlength="4" ng-maxlength="14" />
-                <span class="error" ng-show="(frmTodo.$dirty||submitted)&&frmTodo.cname.$error.required">
+                <input type="text" ng-model="todoModel.TodoDesc" name="tDescriptions" placeholder="" requiredng-minlength="4" ng-maxlength="14" />
+                <span class="error" ng-show="(frmTodo.$dirty||submitted)&&frmTodo.tDescriptions.$error.required">
                     Todo Description is Required
                 </span>
-                <span class="error" ng-show="frmTodo.$dirty&&frmTodo.cname.$error.minlength">
+                <span class="error" ng-show="frmTodo.$dirty&&frmTodo.tDescriptions.$error.minlength">
                     Minimum length required is 5
                 </span>
-                <span class="error" ng-show="frmTodo.$dirty&&frmTodo.cname.$error.maxlength">
+                @*<span class="error" ng-show="frmTodo.$dirty&&frmTodo.tDescriptions.$error.maxlength">
                     Minimum length required is 15
-                </span>
+                </span>*@
             </div>
             <div>
                 <label for="email">
-                    E-mail address
+                    Requester
                 </label>
-                <input type="email" ng-model="custModel.CustEmail" name="email" placeholder="" required />
-                <span class="error" ng-show="(frmTodo.$dirty||submitted)&&frmTodo.email.$error.required">
-                    EmailId is Required!
+                <input type="text" ng-model="todoModel.Requester" name="tRequester" placeholder="" required />
+                <span class="error" ng-show="(frmTodo.$dirty||submitted)&&frmTodo.tRequester.$error.required">
+                    Requester is Required!
                 </span>
-                <span class="error" ng-show="(frmTodo.$dirty||submitted)&&frmTodo.$error.email">
-                    Invalid EmailId!
-                </span>
+          
             </div>
             <div class="btn">
                 <input type="submit" value="Save" ng-click="saveTodo()" ng-disabled="frmTodo.$invalid">
                 <input type="submit" value="Update" ng-click="updateTodo()" ng-disabled="frmTodo.$invalid">
             </div>
-        </form>*@
+        </form>
     <hr />
     <h2 class="text-primary">Not Completed TODOs</h2>
     <table class="table table-striped table-hover table-bordered">

@@ -47,21 +47,22 @@
         $http(
         {
             method: 'POST',
-            url: '/Home/Insert',
+            url: '/Todo/AddTodo',
             data: $scope.todoModel
-        }).success(function (data, status, headers, config) {
+        }).then(function (response) {
             $scope.errors = [];
-            if (data.success === true) {
+            if (response.data === true) {
                 $scope.message = 'Form data Saved!';
                 $scope.result = "color-green";
                 getallData();
                 $scope.todoModel = {};
-                console.log(data);
+                console.log(response.data);
+                $window.location.reload();
             }
             else {
                 $scope.errors = data.errors;
             }
-        }).error(function (data, status, headers, config) {
+        }).catch(function (response) {
             $scope.errors = [];
             $scope.message = 'Unexpected Error while saving data!!';
             console.log($scope.message);
@@ -76,21 +77,22 @@
         $http(
         {
             method: 'POST',
-            url: '/Home/Update',
+            url: '/Todo/UpdateTodo',
             data: $scope.todoModel
-        }).success(function (data, status, headers, config) {
+        }).then(function (response) {
             $scope.errors = [];
-            if (data.success === true) {
+            if (response.data === true) {
                 $scope.todoModel = null;
                 $scope.message = 'Form data Updated!';
                 $scope.result = "color-green";
                 getallData();
                 console.log(data);
+                $window.location.reload();
             }
             else {
                 $scope.errors = data.errors;
             }
-        }).error(function (data, status, headers, config) {
+        }).catch(function (response) {
             $scope.errors = [];
             $scope.message = 'Unexpected Error while saving data!!';
             console.log($scope.message);
@@ -106,7 +108,7 @@
                 .then(function (response)
                 {
                 $scope.errors = [];
-                if (response.data.success === true) {
+                if (response.data === true) {
                     $scope.message = todoModel.TodoID + ' deleted from record!!';
                     $scope.result = "color-red";
                     getallData();
@@ -130,15 +132,10 @@
         var IsConf = confirm('You are about to make complete TODO Number # ' + todoModel.TodoID + '. Are you sure?');
         if (IsConf) {
 
-            $http(
-            {
-                method: 'POST',
-                url: '/Todo/CompleteTodo',
-                data: $scope.todoModel.TodoID
-            })
+            $http.delete('/Todo/CompleteTodo/' + todoModel.TodoID)
                 .then(function (response) {
                     $scope.errors = [];
-                    if (response.data.success === true) {
+                    if (response.data === true) {
                         $scope.message = todoModel.TodoID + ' completed !!';
                         $scope.result = "color-red";
                         getallData();
