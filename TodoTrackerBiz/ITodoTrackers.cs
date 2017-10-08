@@ -8,7 +8,7 @@ using TodoTrackerModels;
 
 namespace TodoTrackerBiz
 {
-   public interface ITodoTrackers
+   public interface ITodoTrackersBiz
     {
 
         List<Todo> GetActiveTodos();

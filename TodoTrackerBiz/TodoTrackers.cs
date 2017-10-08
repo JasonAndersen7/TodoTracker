@@ -9,7 +9,7 @@ using TodoTrackerData;
 
 namespace TodoTrackerBiz
 {
-    public class TodoTrackers : ITodoTrackers
+    public class TodoTrackersBiz : ITodoTrackersBiz
     {
 
 
@@ -71,8 +71,21 @@ namespace TodoTrackerBiz
 
         public bool Delete(int TodoID)
         {
+            bool result = false;
 
-            return true;
+            try
+            {
+                ITodoRepo todoRepo = new TodoRepo();
+
+                result = todoRepo.Delete(TodoID);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return result;
         }
 
         public bool Update(Todo t)
@@ -84,8 +97,22 @@ namespace TodoTrackerBiz
         public bool Complete(int TodoID)
         {
 
+            bool result = false;
 
-            return true;
+            try
+            {
+                ITodoRepo todoRepo = new TodoRepo();
+
+                result = todoRepo.Complete(TodoID);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return result;
 
         }
     }

@@ -100,26 +100,62 @@
     //******=========Delete Todo=========******  
     $scope.deleteTodo = function (todoModel) {
         //debugger;  
-        varIsConf = confirm('You are about to delete TODO Number # ' + todoModel.TodoID + '. Are you sure?');
+        var IsConf = confirm('You are about to delete TODO Number # ' + todoModel.TodoID + '. Are you sure?');
         if (IsConf) {
-            $http.delete('/Home/Delete/' + todoModel.Id).success(function (data, status, headers, config) {
+            $http.delete('/Todo/DeleteTodo/' + todoModel.TodoID)
+                .then(function (response)
+                {
                 $scope.errors = [];
-                if (data.success === true) {
-                    $scope.message = todoModel.todoName + ' deleted from record!!';
+                if (response.data.success === true) {
+                    $scope.message = todoModel.TodoID + ' deleted from record!!';
                     $scope.result = "color-red";
                     getallData();
-                    console.log(data);
+                    console.log(response.data);
+                    $window.location.reload();
                 }
                 else {
-                    $scope.errors = data.errors;
+                    $scope.errors = response.data.errors;
                 }
-            }).error(function (data, status, headers, config) {
+            }).catch(function (response) {
                 $scope.errors = [];
-                $scope.message = 'Unexpected Error while saving data!!';
-                console.log($scope.message);
+                $scope.message = 'Unexpected Error while deleting a todo!!';
+                console.log(response.error);
             });
         }
     };
+
+        //******=========Complete Todo=========******  
+    $scope.completeTodo = function (todoModel) {
+        //debugger;  
+        var IsConf = confirm('You are about to make complete TODO Number # ' + todoModel.TodoID + '. Are you sure?');
+        if (IsConf) {
+
+            $http(
+            {
+                method: 'POST',
+                url: '/Todo/CompleteTodo',
+                data: $scope.todoModel.TodoID
+            })
+                .then(function (response) {
+                    $scope.errors = [];
+                    if (response.data.success === true) {
+                        $scope.message = todoModel.TodoID + ' completed !!';
+                        $scope.result = "color-red";
+                        getallData();
+                        console.log(response.data);
+                        $window.location.reload();
+                    }
+                    else {
+                        $scope.errors = response.data.errors;
+                    }
+                }).catch(function (response) {
+                    $scope.errors = [];
+                    $scope.message = 'Unexpected Error while completing a todo!!';
+                    console.log(response.error);
+                });
+        }
+    };
+
 }).config(function ($locationProvider) {
     $locationProvider.html5Mode(false);
 

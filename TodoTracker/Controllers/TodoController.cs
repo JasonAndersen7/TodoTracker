@@ -25,7 +25,7 @@ namespace TodoTracker.Controllers
         /// <returns></returns>  
         public JsonResult GetAllActive()
         {
-            ITodoTrackers todos = new TodoTrackers();
+            ITodoTrackersBiz todos = new TodoTrackersBiz();
 
             List<Todo> activeTodos = new List<Todo>();
 
@@ -51,7 +51,7 @@ namespace TodoTracker.Controllers
             try
             {
             
-                ITodoTrackers todoTracker = new TodoTrackers();
+                ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
 
                 todo = todoTracker.GetSingleTodo(id);
             }
@@ -60,6 +60,41 @@ namespace TodoTracker.Controllers
 
             return Json(todo, JsonRequestBehavior.AllowGet);
         }
+
+        // Delete A Todo
+        [HttpDelete]
+        public JsonResult DeleteTodo(int id)
+        {
+            bool result = false;
+            try
+            {
+                ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
+
+                result = todoTracker.Delete(id);
+            }
+            catch
+            { }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        // Udpate to Completed
+        [HttpPost]
+        public JsonResult CompleteTodo(int id)
+        {
+            bool result = false;
+            try
+            {
+                ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
+
+                result = todoTracker.Complete(id);
+            }
+            catch
+            { }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
 
     }
 

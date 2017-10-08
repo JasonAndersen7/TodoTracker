@@ -12,7 +12,7 @@ namespace TodoTracker.Tests.BizTierTests
         public void TestGetAllActiveBizReposGreaterThanZero()
         {
             //Arrange
-            ITodoTrackers testTodoBiz = new TodoTrackers();
+            ITodoTrackersBiz testTodoBiz = new TodoTrackersBiz();
 
             //Act
             var results = testTodoBiz.GetActiveTodos();
