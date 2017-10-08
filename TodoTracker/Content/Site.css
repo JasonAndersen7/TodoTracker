@@ -22,3 +22,21 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.color-red {  
+color: red;  
+}  
+  
+.color-green {  
+color: green;  
+} 
+
+[ng\: cloak],  
+[ng - cloak],  
+[data - ng - cloak],  
+[x - ng - cloak],  
+.ng - cloak,  
+.x - ng - cloak  
+{  
+    display: none!important;  
+} 
