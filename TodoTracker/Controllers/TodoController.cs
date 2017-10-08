@@ -31,14 +31,14 @@ namespace TodoTracker.Controllers
 
             try
             {
-                 activeTodos =todos.GetActiveTodos();
+                activeTodos = todos.GetActiveTodos();
             }
-            catch 
+            catch
             {
                 throw;
             }
 
-            return Json(activeTodos, JsonRequestBehavior.AllowGet);  
+            return Json(activeTodos, JsonRequestBehavior.AllowGet);
             //    return Json(, JsonRequestBehavior.AllowGet);
 
         }
@@ -47,10 +47,10 @@ namespace TodoTracker.Controllers
         [HttpGet]
         public JsonResult GetActiveTodo(int id)
         {
-            object todo = null;
+            Todo todo = null;
             try
             {
-            
+
                 ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
 
                 todo = todoTracker.GetSingleTodo(id);
@@ -113,12 +113,18 @@ namespace TodoTracker.Controllers
                     });
                 }
                 catch
-                { } 
+                { }
             }
+
+            var errors = ModelState
+    .Where(x => x.Value.Errors.Count > 0)
+    .Select(x => new { x.Key, x.Value.Errors })
+    .ToArray();
+
             return Json(new
             {
                 success = false,
-                errors = ModelState.Keys.SelectMany(i => ModelState[i].Errors).Select(m => m.ErrorMessage).ToArray()
+                errors
             });
         }
 
@@ -149,13 +155,19 @@ namespace TodoTracker.Controllers
                     }
                 }
                 catch
-                { } 
+                { }
+
             }
 
+
+            var errors = ModelState
+.Where(x => x.Value.Errors.Count > 0)
+.Select(x => new { x.Key, x.Value.Errors })
+.ToArray();
             return Json(new
             {
                 success = false,
-                errors = ModelState.Keys.SelectMany(i => ModelState[i].Errors).Select(m => m.ErrorMessage).ToArray()
+                errors
             });
         }
 

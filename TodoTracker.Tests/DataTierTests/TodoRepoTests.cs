@@ -64,7 +64,7 @@ namespace TodoTrackerData.Tests
             Todo todoTest = new Todo()
             {
                 Assignee = "Alex Smith",
-                DueDate = DateTime.Now,
+                DueDate = DateTime.Now.ToString(),
                 IsCompleted = 0,
                 TodoDesc ="Score a Touchdown",
                 Requester = "Peyton Manning"
@@ -90,7 +90,7 @@ namespace TodoTrackerData.Tests
             Todo todoTest = new Todo()
             {
                 Assignee = "Alex Smith",
-                DueDate = DateTime.Now,
+                DueDate = DateTime.Now.ToString(),
                 IsCompleted = 0,
                 TodoDesc = "Score a Touchdown",
                 Requester = "Peyton Manning",

@@ -62,7 +62,7 @@ namespace TodoTrackerData
                 commandText.Append("INSERT INTO Todo ( Requester, Assignee, DueDate, TodoDesc, IsCompleted ) VALUES ('");
                 commandText.Append(newTodo.Requester + "', '");
                 commandText.Append(newTodo.Assignee + "', '");
-                commandText.Append(newTodo.DueDate.ToString() + "', '");
+                commandText.Append(newTodo.DueDate + "', '");
                 commandText.Append(newTodo.TodoDesc + "', '");
                 commandText.Append(newTodo.IsCompleted + "')");
                     
@@ -240,6 +240,13 @@ namespace TodoTrackerData
             return true;
         }
 
+
+
+        private string DateTimeSQLite(DateTime datetime)
+        {
+            string dateTimeFormat = "{0}-{1}-{2} {3}:{4}:{5}.{6}";
+            return string.Format(dateTimeFormat, datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second, datetime.Millisecond);
+        }
 
     }
 }

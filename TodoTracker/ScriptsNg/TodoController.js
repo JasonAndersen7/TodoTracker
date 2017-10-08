@@ -29,9 +29,10 @@
         $http.get('/Todo/GetActiveTodo/' + todoModel.TodoID)
             .then(function (response) {
                 $scope.todoModel = response.data;
+                $scope.todoModel.DueDate = new Date($scope.todoModel.DueDate);
                 getallData();
                 console.log(response.data);
-                $scope.message = 'Todo ' +todoModel.TodoID + ' Retreived';
+                $scope.message = 'Todo #' +todoModel.TodoID + ' :' + todoModel.TodoDesc + ' Retreived';
             })
             .catch(function (response) {
                 console.log(response.error);
@@ -51,13 +52,13 @@
             data: $scope.todoModel
         }).then(function (response) {
             $scope.errors = [];
-            if (response.data === true) {
-                $scope.message = 'Form data Saved!';
+            if (response.data.success === true) {
+                $scope.message = 'Todo Record ' + $scope.todoModel.TodoDesc + ' Added!';
                 $scope.result = "color-green";
                 getallData();
                 $scope.todoModel = {};
                 console.log(response.data);
-                $window.location.reload();
+                //$window.location.reload();
             }
             else {
                 $scope.errors = data.errors;
@@ -81,13 +82,13 @@
             data: $scope.todoModel
         }).then(function (response) {
             $scope.errors = [];
-            if (response.data === true) {
+            if (response.data.success === true) {
                 $scope.todoModel = null;
-                $scope.message = 'Form data Updated!';
+                $scope.message = 'Record Todo Updated!';
                 $scope.result = "color-green";
                 getallData();
-                console.log(data);
-                $window.location.reload();
+                console.log(response.data);
+                //$window.location.reload();
             }
             else {
                 $scope.errors = data.errors;
@@ -102,7 +103,7 @@
     //******=========Delete Todo=========******  
     $scope.deleteTodo = function (todoModel) {
         //debugger;  
-        var IsConf = confirm('You are about to delete TODO Number # ' + todoModel.TodoID + '. Are you sure?');
+        var IsConf = confirm('You are about to delete TODO Number #' + todoModel.TodoID + ' :' + todoModel.TodoDesc + ' . Are you sure?');
         if (IsConf) {
             $http.delete('/Todo/DeleteTodo/' + todoModel.TodoID)
                 .then(function (response)
@@ -113,7 +114,7 @@
                     $scope.result = "color-red";
                     getallData();
                     console.log(response.data);
-                    $window.location.reload();
+                  //  $window.location.reload();
                 }
                 else {
                     $scope.errors = response.data.errors;
@@ -129,7 +130,7 @@
         //******=========Complete Todo=========******  
     $scope.completeTodo = function (todoModel) {
         //debugger;  
-        var IsConf = confirm('You are about to make complete TODO Number # ' + todoModel.TodoID + '. Are you sure?');
+        var IsConf = confirm('You are about to make complete TODO Number #' + todoModel.TodoID + ' :' + todoModel.TodoDesc + '. Are you sure?');
         if (IsConf) {
 
             $http.delete('/Todo/CompleteTodo/' + todoModel.TodoID)
@@ -140,7 +141,7 @@
                         $scope.result = "color-red";
                         getallData();
                         console.log(response.data);
-                        $window.location.reload();
+                    //    $window.location.reload();
                     }
                     else {
                         $scope.errors = response.data.errors;
@@ -151,6 +152,13 @@
                     console.log(response.error);
                 });
         }
+    };
+
+        // @Function
+        // Description  : Triggered while displaying due date in Todo Details screen.
+    $scope.formatDate = function (date) {
+        var dateOut = new Date(date);
+        return dateOut;
     };
 
 }).config(function ($locationProvider) {
