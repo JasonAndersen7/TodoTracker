@@ -44,7 +44,17 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ninject, Version=3.3.1.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.1\lib\net45\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -104,6 +114,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BizTierTests\TodoBizTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
     <Compile Include="TodoDBDALTests.cs" />
@@ -119,6 +130,10 @@
     <ProjectReference Include="..\Models\TodoTrackerModels.csproj">
       <Project>{19be5eb8-e422-4260-9582-914387b9033b}</Project>
       <Name>TodoTrackerModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TodoTrackerBiz\TodoTrackerBiz.csproj">
+      <Project>{a758e891-38c5-47e1-88a3-eede894412a2}</Project>
+      <Name>TodoTrackerBiz</Name>
     </ProjectReference>
     <ProjectReference Include="..\TodoTrackerData\TodoTrackerData.csproj">
       <Project>{311E452A-410D-49C1-88F6-B2F3DDC4E414}</Project>

@@ -66,20 +66,65 @@ namespace TodoTrackerData.Tests
                 Assignee = "Alex Smith",
                 DueDate = DateTime.Now,
                 IsCompleted = 0,
+                TodoDesc ="Score a Touchdown",
                 Requester = "Peyton Manning"
 
             };
-
 
             ITodoRepo dbDal = new TodoRepo();
 
             //Act
            bool result = dbDal.AddTodo(todoTest);
 
-
             //Assert
             Assert.IsNotNull(todoTest);
 
+        }
+
+        [TestMethod()]
+        public void UpdateSingleTodo ()
+        {
+
+            //For now hard code the variables to add
+            //Arrange
+            Todo todoTest = new Todo()
+            {
+                Assignee = "Alex Smith",
+                DueDate = DateTime.Now,
+                IsCompleted = 0,
+                TodoDesc = "Score a Touchdown",
+                Requester = "Peyton Manning",
+                TodoID = 1
+                
+            };
+
+            ITodoRepo dbDal = new TodoRepo();
+
+            //Act
+            bool result = dbDal.Update(todoTest);
+
+            //Assert
+            Assert.IsNotNull(todoTest);
+            Assert.IsTrue(result);
+
+        }
+
+
+        [TestMethod()]
+        public void CompleteSingleTodo()
+        {
+
+            //For now hard code the variables 
+            //Arrange
+            int TodoId = 1;
+
+            ITodoRepo dbDal = new TodoRepo();
+
+            //Act
+            bool result = dbDal.Complete(TodoId);
+
+            //Assert
+            Assert.IsTrue(result);
 
         }
 
