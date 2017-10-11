@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TodoTrackerBiz;
+using TodoTrackerData;
 using System.Collections.Generic;
 
 namespace TodoTracker.Tests.BizTierTests
@@ -9,20 +10,15 @@ namespace TodoTracker.Tests.BizTierTests
     public class TodoBizTests
     {
 
-        private readonly ITodoService _todoBiz;
-
-        public TodoBizTests(ITodoService todoBiz)
-        {
-            _todoBiz = todoBiz;
-        }
-
-
+        private  ITodoService _todoBiz;
+        private  ITodoRepo _todoRepo;
         
         [TestMethod]
         public void TestGetAllActiveBizReposGreaterThanZero()
         {
             //Arrange
-            
+            _todoRepo = new TodoRepo();
+            _todoBiz = new TodoService(_todoRepo);
             
             //Act
             var results = _todoBiz.GetActiveTodos();
