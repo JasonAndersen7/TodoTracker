@@ -24,7 +24,7 @@ namespace TodoTrackerData.Tests
             ITodoRepo dbDal = new TodoRepo();
 
             //Act
-            todoTest = dbDal.GetActiveTodos();
+            todoTest = dbDal.GetAllTodos();
 
 
             //Assert
@@ -80,6 +80,27 @@ namespace TodoTrackerData.Tests
             Assert.IsNotNull(todoTest);
 
         }
+
+        /// <summary>
+        /// Verify that you can add a record
+        /// </summary>
+        [TestMethod()]
+        public void DeleteTodo()
+        {
+            //For now hard code the variables to add
+            //Arrange
+            int todoId = 2;
+
+            ITodoRepo dbDal = new TodoRepo();
+
+            //Act
+            bool result = dbDal.Delete(2);
+
+            //Assert
+            Assert.IsNotNull(todoId);
+
+        }
+
 
         [TestMethod()]
         public void UpdateSingleTodo ()

@@ -8,14 +8,24 @@ namespace TodoTracker.Tests.BizTierTests
     [TestClass]
     public class TodoBizTests
     {
+
+        private readonly ITodoService _todoBiz;
+
+        public TodoBizTests(ITodoService todoBiz)
+        {
+            _todoBiz = todoBiz;
+        }
+
+
+        
         [TestMethod]
         public void TestGetAllActiveBizReposGreaterThanZero()
         {
             //Arrange
-            ITodoTrackersBiz testTodoBiz = new TodoTrackersBiz();
-
+            
+            
             //Act
-            var results = testTodoBiz.GetActiveTodos();
+            var results = _todoBiz.GetActiveTodos();
 
             //Assert
             //verify that there are records in the database

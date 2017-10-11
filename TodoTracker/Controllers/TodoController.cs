@@ -11,6 +11,13 @@ namespace TodoTracker.Controllers
 {
     public class TodoController : Controller
     {
+        private ITodoService _todoBiz;
+
+        public TodoController(ITodoService todoBiz)
+        {
+            _todoBiz = todoBiz;
+        }
+
         // GET: Todo
         public ActionResult Index()
         {
@@ -25,13 +32,13 @@ namespace TodoTracker.Controllers
         /// <returns></returns>  
         public JsonResult GetAllActive()
         {
-            ITodoTrackersBiz todos = new TodoTrackersBiz();
+         
 
             List<Todo> activeTodos = new List<Todo>();
 
             try
             {
-                activeTodos = todos.GetActiveTodos();
+                activeTodos = _todoBiz.GetActiveTodos();
             }
             catch
             {
@@ -50,10 +57,9 @@ namespace TodoTracker.Controllers
             Todo todo = null;
             try
             {
+        
 
-                ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
-
-                todo = todoTracker.GetSingleTodo(id);
+                todo = _todoBiz.GetSingleTodo(id);
             }
             catch
             { }
@@ -68,9 +74,8 @@ namespace TodoTracker.Controllers
             bool result = false;
             try
             {
-                ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
-
-                result = todoTracker.Delete(id);
+      
+                result = _todoBiz.Delete(id);
             }
             catch
             { }
@@ -85,9 +90,8 @@ namespace TodoTracker.Controllers
             bool result = false;
             try
             {
-                ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
 
-                result = todoTracker.Complete(id);
+                result = _todoBiz.Complete(id);
             }
             catch
             { }
@@ -104,9 +108,8 @@ namespace TodoTracker.Controllers
             {
                 try
                 {
-                    ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
-
-                    result = todoTracker.Update(model);
+                
+                   result = _todoBiz.Update(model);
                     return Json(new
                     {
                         success = result
@@ -142,9 +145,9 @@ namespace TodoTracker.Controllers
             {
                 try
                 {
-                    ITodoTrackersBiz todoTracker = new TodoTrackersBiz();
+                
 
-                    result = todoTracker.AddTodo(model);
+                    result = _todoBiz.AddTodo(model);
 
                     if (result)
                     {

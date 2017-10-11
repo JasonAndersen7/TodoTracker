@@ -10,24 +10,31 @@ using System.Data;
 using System.Data.SQLite;
 using System.Configuration;
 using Dapper;
+using NLog;
 
 namespace TodoTrackerData
 {
     public  class TodoRepo : ITodoRepo
     {
-        IDbConnection sqlConn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["ToDoDB"].ConnectionString);
 
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private IDbConnection sqlConn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["ToDoDB"].ConnectionString);
 
         /// <summary>
-        /// Used to get only all Active Todos, those who do not have the IsCompleted Flag set to true
+        /// Used to get only all  Todos
         /// </summary>
         /// <returns></returns>
-        public  List<Todo> GetActiveTodos()
+        public  List<Todo> GetAllTodos()
         {
-            //get all todos but don't get ones that are completed
-            string SqlString = "Select TodoID, Requester, Assignee, DueDate, IsCompleted, TodoDesc from TODO where IsCompleted Not IN (1)";
+            //get all todos 
+            string SqlString = "Select TodoID, Requester, Assignee, DueDate, IsCompleted, TodoDesc from TODO";
+
+            logger.Info("Sql query created :{0}", SqlString);
 
             var myTodos = (List<TodoTrackerModels.Todo>)sqlConn.Query<TodoTrackerModels.Todo>(SqlString);
+
+
+            logger.Info(" Todos retreived : {0}", myTodos.Select(x => x.TodoID).ToList().ToString());
 
             return myTodos;
         }
@@ -41,9 +48,13 @@ namespace TodoTrackerData
         {
             string SqlString = "Select TodoID, Requester, Assignee, DueDate, IsCompleted, TodoDesc from TODO where TODoID = " + TodoID;
 
+            logger.Info("Sql query created :{0}", SqlString);
+
             //Had to add First or Default as some of my tests came back with multiple results, 
             //Research into why, most likely bad data, or bad data modeling
             var myTodo = (Todo)sqlConn.Query<TodoTrackerModels.Todo>(SqlString).FirstOrDefault();
+
+            logger.Info(" Todo retreived : {0}", myTodo.TodoID);
 
             return myTodo;
         }
@@ -59,32 +70,31 @@ namespace TodoTrackerData
             {
                 //TODO Research Dapper commands for Inserts
                 StringBuilder commandText = new StringBuilder();
-                commandText.Append("INSERT INTO Todo ( Requester, Assignee, DueDate, TodoDesc, IsCompleted ) VALUES ('");
-                commandText.Append(newTodo.Requester + "', '");
-                commandText.Append(newTodo.Assignee + "', '");
-                commandText.Append(newTodo.DueDate + "', '");
-                commandText.Append(newTodo.TodoDesc + "', '");
-                commandText.Append(newTodo.IsCompleted + "')");
-                    
-                
-                // Ensure we have a connection
-            if (sqlConn == null)
-                {
-                    throw new NullReferenceException(
-                        "Please provide a connection");
-                }
+                commandText.Append(@"INSERT INTO Todo ( Requester, Assignee, DueDate, TodoDesc, IsCompleted ) VALUES ");
+                commandText.Append(@"(@Requester, @Assignee, @DueDate, @TodoDesc, @IsCompleted)");
 
-                // Ensure that the connection state is Open
-                if (sqlConn.State != ConnectionState.Open)
-                {
-                    sqlConn.Open();
-                }
+                logger.Info(" SQL command text for Adding a Record:{0}", commandText.ToString());
 
-                sqlConn.Execute(commandText.ToString());
+                CommandDefinition sqlCommand = new CommandDefinition(commandText.ToString(), 
+                    new { Requester = newTodo.Requester, Assignee = newTodo.Assignee,
+                        DueDate = newTodo.DueDate, TodoDesc = newTodo.TodoDesc, isCompleted = 0 } );
+
+
+
+                int recordsAffected = sqlConn.Execute(sqlCommand);
+
+                logger.Info("Inserting Record resulted in :{0}", recordsAffected);
+
+                if (recordsAffected > 0)
+                {
+                    return true;
+                }
+                return false;
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.Error(ex, "Exception happened while inseting a record", newTodo);
                 throw;
             }
             finally
@@ -92,10 +102,8 @@ namespace TodoTrackerData
                 //good practice to close your db connections
                 sqlConn.Close();
             }
-            //the command succeeded
-            return true;
+          
         }
-
 
         /// <summary>
         /// Used to delete a specific record
@@ -106,30 +114,24 @@ namespace TodoTrackerData
         {
             try
             {
-                //TODO Research Dapper commands for Inserts
-                StringBuilder commandText = new StringBuilder();
-                commandText.Append("DELETE FROM Todo WHERE TodoId = '" + TodoID + "'");
+             
+                 CommandDefinition sqlCommand = new CommandDefinition(@"DELETE FROM Todo WHERE TodoId = @TodoID", new { TodoID = TodoID });
 
-                // Ensure we have a connection
-                if (sqlConn == null)
+                ValidateSQLConnection(sqlConn);
+
+                int recordsAffected = this.sqlConn.Execute(sqlCommand);
+                logger.Info("Deleting Record :{0} resulted in :{1}", TodoID, recordsAffected);
+
+                if (recordsAffected > 0)
                 {
-                    throw new NullReferenceException(
-                        "Please provide a connection");
+                    return true;
                 }
-
-                // Ensure that the connection state is Open
-                if (sqlConn.State != ConnectionState.Open)
-                {
-                    sqlConn.Open();
-                }
-
-                sqlConn.Execute(commandText.ToString());
-
+                return false;
                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.Error(ex, "Exception happened while deleting a record", TodoID);
                 throw;
             }
             finally
@@ -138,11 +140,9 @@ namespace TodoTrackerData
                 sqlConn.Close();
             }
             //the command succeeded
-            return true;
 
             
         }
-
 
         /// <summary>
         /// Used to update one record
@@ -153,35 +153,31 @@ namespace TodoTrackerData
         {
             try
             {
-                //TODO Research Dapper commands for Updates
+              
                 StringBuilder commandText = new StringBuilder();
                 commandText.Append("UPDATE Todo SET "); 
-                  commandText.Append(string.Format("Requester = '{0}',", updateTodo.Requester));
-                commandText.Append(string.Format(" Assignee = '{0}',", updateTodo.Assignee));
-                commandText.Append(string.Format(" DueDate = '{0}',", updateTodo.DueDate.ToString()));
-                commandText.Append(string.Format(" IsCompleted = '{0}',", updateTodo.IsCompleted));
-                commandText.Append(string.Format(" TodoDesc = '{0}'", updateTodo.TodoDesc));
-                commandText.Append("WHERE ");
-                commandText.Append(" TODOID = " + updateTodo.TodoID);
+                
+                commandText.Append(string.Format("Requester = @Requester, "));
+                commandText.Append(string.Format(" Assignee = @Assignee, "));
+                commandText.Append(string.Format(" DueDate = @DueDate, "));
+                commandText.Append(string.Format(" TodoDesc = @TodoDesc "));
+                commandText.Append("WHERE TODOID = " + updateTodo.TodoID);
 
-                // Ensure we have a connection
-                if (sqlConn == null)
+                ValidateSQLConnection(sqlConn);
+
+                int recordsAffected = this.sqlConn.Execute(commandText.ToString(), updateTodo);
+                logger.Info("Updating Record :{0} resulted in :{1}", updateTodo.TodoID, recordsAffected);
+
+                if (recordsAffected > 0)
                 {
-                    throw new NullReferenceException(
-                        "Please provide a connection");
+                    return true;
                 }
+                return false;
 
-                // Ensure that the connection state is Open
-                if (sqlConn.State != ConnectionState.Open)
-                {
-                    sqlConn.Open();
-                }
-
-                sqlConn.Execute(commandText.ToString());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.Error(ex, "Exception happened while updating a record", updateTodo);
                 throw;
             }
             finally
@@ -189,8 +185,7 @@ namespace TodoTrackerData
                 //good practice to close your db connections
                 sqlConn.Close();
             }
-            //the command succeeded
-            return true;
+        
         }
 
         /// <summary>
@@ -202,32 +197,27 @@ namespace TodoTrackerData
         {
             try
             {
-                //TODO Research Dapper commands for Updates
-                StringBuilder commandText = new StringBuilder();
-                commandText.Append("UPDATE Todo SET ");
-                commandText.Append(string.Format(" IsCompleted = '{0}'",1));
-             
-                commandText.Append("WHERE ");
-                commandText.Append(" TODOID = " + TodoID);
+     
+                CommandDefinition sqlCommand = new CommandDefinition(@"UPDATE Todo SET IsCompleted = 1 WHERE TodoId = @TodoID", new { TodoID = TodoID });
 
-                // Ensure we have a connection
-                if (sqlConn == null)
+                logger.Info("Completing :{0} with sql command of :{1}", TodoID, sqlCommand.CommandText);
+
+
+                ValidateSQLConnection(sqlConn);
+
+                int recordsAffected = this.sqlConn.Execute(sqlCommand);
+                logger.Info("Completing Todo :{0} resulted in :{1}", TodoID, recordsAffected);
+
+                if (recordsAffected > 0)
                 {
-                    throw new NullReferenceException(
-                        "Please provide a connection");
+                    return true;
                 }
+                return false;
 
-                // Ensure that the connection state is Open
-                if (sqlConn.State != ConnectionState.Open)
-                {
-                    sqlConn.Open();
-                }
-
-                sqlConn.Execute(commandText.ToString());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.Error(ex, "Exception happened while completing a record", TodoID);
                 throw;
             }
 
@@ -236,16 +226,33 @@ namespace TodoTrackerData
                 //good practice to close your db connections
                 sqlConn.Close();
             }
-            //the command succeeded
-            return true;
+            
         }
-
-
 
         private string DateTimeSQLite(DateTime datetime)
         {
             string dateTimeFormat = "{0}-{1}-{2} {3}:{4}:{5}.{6}";
             return string.Format(dateTimeFormat, datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second, datetime.Millisecond);
+        }
+
+        private bool ValidateSQLConnection (IDbConnection sqlConn)
+        {
+
+            // Ensure we have a connection
+            if (sqlConn == null)
+            {
+                throw new NullReferenceException(
+                    "Please provide a connection");
+            }
+
+            // Ensure that the connection state is Open
+            if (sqlConn.State != ConnectionState.Open)
+            {
+                sqlConn.Open();
+            }
+
+            return true;
+
         }
 
     }

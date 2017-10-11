@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+
+<h2>Create TODO</h2>
+<div id="content" ng-controller="TodoController">
+    <span ng-show="isViewLoading" class="viewLoading">
+        <img src="~/Content/images/ng-loader.gif" /> loading...
+
+    </span>
+    <div ng-class="result">
+        {{message}}
+    </div>
+    <hr />
+    <form name="frmTodo" novalidate>
+            <div>
+                <input type="hidden" ng-model="todoModel.Id" name="todoID" />
+            </div>
+            <div>
+                <label for="email">
+                    Todo Description
+                </label>
+                <input type="text" ng-model="todoModel.TodoDesc" name="tDescriptions" placeholder="" requiredng-minlength="4" ng-maxlength="14" />
+                <span class="error" ng-show="(frmTodo.$dirty||submitted)&&frmTodo.tDescriptions.$error.required">
+                    Todo Description is Required
+                </span>
+                <span class="error" ng-show="frmTodo.$dirty&&frmTodo.tDescriptions.$error.minlength">
+                    Minimum length required is 5
+                </span>
+                @*<span class="error" ng-show="frmTodo.$dirty&&frmTodo.tDescriptions.$error.maxlength">
+                    Minimum length required is 15
+                </span>*@
+            </div>
+            <div>
+                <label for="email">
+                    Requester
+                </label>
+                <input type="text" ng-model="todoModel.Requester" name="tRequester" placeholder="" required />
+                <span class="error" ng-show="(frmTodo.$dirty||submitted)&&frmTodo.tRequester.$error.required">
+                    Requester is Required!
+                </span>
+          
+            </div>
+            <div class="btn">
+                <input type="submit" value="Save" ng-click="saveTodo()" ng-disabled="frmTodo.$invalid">
+                <input type="submit" value="Update" ng-click="updateTodo()" ng-disabled="frmTodo.$invalid">
+            </div>
+        </form>
+    <hr />
+    <h2 class="text-primary">Not Completed TODOs</h2>
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Requester</th>
+                <th>Description</th>
+                <th>Assignee</th>
+                <th>Due Date</th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tr ng-repeat="todoModel in ListTodo">
+            <td>{{todoModel.TodoID}}</td>
+            <td>{{todoModel.Requester}}</td>
+            <td> {{todoModel.TodoDesc}}</td>
+            <td>{{todoModel.Assignee}}</td>
+            <td>{{todoModel.DueDate}}</td>
+            <td>
+
+                <a href="#" ng-click="getTodo(todoModel)" title="Edit Record" class="btn btn-info" role="button">
+                    Edit
+                </a>
+                <a href="#" ng-click="completeTodo(todoModel)" title="Complete Record" class="btn btn-success" role="button">
+                    Complete
+                </a>
+                <a href="#" ng-click="deleteTodo(todoModel)" title="Delete Record" class="btn btn-danger" role="button">
+                    Delete
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+@section JavaScript{
+
+    <script src="~/Scripts/angular.js">
+
+    </script>
+    <script src="~/ScriptsNg/TodoController.js">
+
+    </script>
+}  

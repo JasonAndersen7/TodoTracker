@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 using TodoTrackerModels;
 using TodoTrackerData;
 
-
 namespace TodoTrackerBiz
 {
-    public class TodoTrackersBiz : ITodoTrackersBiz
+    public class TodoService : ITodoService
     {
+        private readonly ITodoRepo _todoRepo;
 
+        public TodoService(ITodoRepo todoRepo)
+        {
+            _todoRepo = todoRepo;
+        }
 
         public List<Todo> GetActiveTodos()
         {
@@ -21,7 +25,7 @@ namespace TodoTrackerBiz
             {
                 ITodoRepo todoRepo = new TodoRepo();
 
-                todos = todoRepo.GetActiveTodos();
+                todos = todoRepo.GetAllTodos();
 
                 //verify that there are some todos in the Database
                 if (!todos.Any())
@@ -30,6 +34,9 @@ namespace TodoTrackerBiz
                     //Log that there are no todos in the database
 
                 }
+
+                //remove completed items from the list
+                todos.RemoveAll(x => x.IsCompleted == 1);
             }
             catch (Exception)
             {
@@ -51,7 +58,6 @@ namespace TodoTrackerBiz
 
                 retrievedTodo = todoRepo.GetSingleTodo(TodoID);
 
-          
             }
             catch (Exception)
             {
