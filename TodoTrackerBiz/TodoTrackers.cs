@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TodoTrackerModels;
 using TodoTrackerData;
+using TodoTrackerModels;
 
 namespace TodoTrackerBiz
 {
+    /// <summary>
+    /// Defines the <see cref="TodoService" />
+    /// </summary>
     public class TodoService : ITodoService
     {
+        /// <summary>
+        /// Defines the _todoRepo
+        /// </summary>
         private readonly ITodoRepo _todoRepo;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TodoService"/> class.
+        /// </summary>
+        /// <param name="todoRepo">The <see cref="ITodoRepo"/></param>
         public TodoService(ITodoRepo todoRepo)
         {
             _todoRepo = todoRepo;
@@ -50,6 +58,11 @@ namespace TodoTrackerBiz
             return todos;
         }
 
+        /// <summary>
+        /// The GetSingleTodo
+        /// </summary>
+        /// <param name="TodoID">The <see cref="int"/></param>
+        /// <returns>The <see cref="Todo"/></returns>
         public Todo GetSingleTodo(int TodoID)
         {
             Todo retrievedTodo = new Todo();
@@ -69,6 +82,11 @@ namespace TodoTrackerBiz
             return retrievedTodo;
         }
 
+        /// <summary>
+        /// The AddTodo
+        /// </summary>
+        /// <param name="t">The <see cref="Todo"/></param>
+        /// <returns>The <see cref="bool"/></returns>
         public bool AddTodo(Todo t)
         {
             bool result = false;
@@ -87,6 +105,11 @@ namespace TodoTrackerBiz
             return result;
         }
 
+        /// <summary>
+        /// The Delete
+        /// </summary>
+        /// <param name="TodoID">The <see cref="int"/></param>
+        /// <returns>The <see cref="bool"/></returns>
         public bool Delete(int TodoID)
         {
             bool result = false;
@@ -105,6 +128,11 @@ namespace TodoTrackerBiz
             return result;
         }
 
+        /// <summary>
+        /// The Update
+        /// </summary>
+        /// <param name="t">The <see cref="Todo"/></param>
+        /// <returns>The <see cref="bool"/></returns>
         public bool Update(Todo t)
         {
             bool result = false;
@@ -125,6 +153,11 @@ namespace TodoTrackerBiz
             return result;
         }
 
+        /// <summary>
+        /// The Complete
+        /// </summary>
+        /// <param name="TodoID">The <see cref="int"/></param>
+        /// <returns>The <see cref="bool"/></returns>
         public bool Complete(int TodoID)
         {
 
@@ -143,7 +176,6 @@ namespace TodoTrackerBiz
             }
 
             return result;
-
         }
     }
 }

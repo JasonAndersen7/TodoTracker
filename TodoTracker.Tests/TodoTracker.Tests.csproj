@@ -148,7 +148,6 @@
     <Compile Include="BizTierTests\TodoBizTests.cs" />
     <Compile Include="BizTierTests\MoreBizTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\HomeControllerTest.cs" />
     <Compile Include="DataTierTests\IntegrationTodoRepoTests.cs" />
   </ItemGroup>
   <ItemGroup>
