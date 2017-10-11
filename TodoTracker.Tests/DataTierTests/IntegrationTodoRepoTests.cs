@@ -1,18 +1,16 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TodoTrackerData;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TodoTrackerModels;
 
 namespace TodoTrackerData.Tests
 {
+    /// <summary>
+    /// Defines the <see cref="TodoRepoTests" />
+    /// </summary>
     [TestClass()]
     public class TodoRepoTests
     {
-
         /// <summary>
         /// Verify that there are more than 1 records in the database
         /// </summary>
@@ -25,6 +23,7 @@ namespace TodoTrackerData.Tests
 
             //Act
             todoTest = dbDal.GetAllTodos();
+
 
 
             //Assert
@@ -44,13 +43,11 @@ namespace TodoTrackerData.Tests
             ITodoRepo dbDal = new TodoRepo();
 
             //Act
-            todoTest= dbDal.GetSingleTodo(1);
+            todoTest = dbDal.GetSingleTodo(1);
 
 
             //Assert
             Assert.IsNotNull(todoTest);
-
-
         }
 
         /// <summary>
@@ -66,7 +63,7 @@ namespace TodoTrackerData.Tests
                 Assignee = "Alex Smith",
                 DueDate = DateTime.Now.ToString(),
                 IsCompleted = 0,
-                TodoDesc ="Score a Touchdown",
+                TodoDesc = "Score a Touchdown",
                 Requester = "Peyton Manning"
 
             };
@@ -74,11 +71,10 @@ namespace TodoTrackerData.Tests
             ITodoRepo dbDal = new TodoRepo();
 
             //Act
-           bool result = dbDal.AddTodo(todoTest);
+            bool result = dbDal.AddTodo(todoTest);
 
             //Assert
             Assert.IsNotNull(todoTest);
-
         }
 
         /// <summary>
@@ -98,12 +94,13 @@ namespace TodoTrackerData.Tests
 
             //Assert
             Assert.IsNotNull(todoId);
-
         }
 
-
+        /// <summary>
+        /// The UpdateSingleTodo
+        /// </summary>
         [TestMethod()]
-        public void UpdateSingleTodo ()
+        public void UpdateSingleTodo()
         {
 
             //For now hard code the variables to add
@@ -116,7 +113,7 @@ namespace TodoTrackerData.Tests
                 TodoDesc = "Score a Touchdown",
                 Requester = "Peyton Manning",
                 TodoID = 1
-                
+
             };
 
             ITodoRepo dbDal = new TodoRepo();
@@ -127,10 +124,11 @@ namespace TodoTrackerData.Tests
             //Assert
             Assert.IsNotNull(todoTest);
             Assert.IsTrue(result);
-
         }
 
-
+        /// <summary>
+        /// The CompleteSingleTodo
+        /// </summary>
         [TestMethod()]
         public void CompleteSingleTodo()
         {
@@ -146,8 +144,6 @@ namespace TodoTrackerData.Tests
 
             //Assert
             Assert.IsTrue(result);
-
         }
-
     }
 }

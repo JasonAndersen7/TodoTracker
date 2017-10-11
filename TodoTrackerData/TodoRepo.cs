@@ -1,30 +1,36 @@
-﻿using System;
+﻿using Dapper;
+using NLog;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TodoTrackerModels;
-
-
+using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
-using System.Configuration;
-using Dapper;
-using NLog;
+using System.Linq;
+using System.Text;
+using TodoTrackerModels;
 
 namespace TodoTrackerData
 {
-    public  class TodoRepo : ITodoRepo
+    /// <summary>
+    /// Defines the <see cref="TodoRepo" />
+    /// </summary>
+    public class TodoRepo : ITodoRepo
     {
-
+        /// <summary>
+        /// Defines the logger
+        /// </summary>
         private static Logger logger = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Defines the sqlConn
+        /// </summary>
         private IDbConnection sqlConn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["ToDoDB"].ConnectionString);
 
         /// <summary>
         /// Used to get only all  Todos
         /// </summary>
         /// <returns></returns>
-        public  List<Todo> GetAllTodos()
+        public List<Todo> GetAllTodos()
         {
             //get all todos 
             string SqlString = "Select TodoID, Requester, Assignee, DueDate, IsCompleted, TodoDesc from TODO";
@@ -33,8 +39,7 @@ namespace TodoTrackerData
 
             var myTodos = (List<TodoTrackerModels.Todo>)sqlConn.Query<TodoTrackerModels.Todo>(SqlString);
 
-
-            logger.Info(" Todos retreived : {0}", myTodos.Select(x => x.TodoID).ToList().ToString());
+            logger.Info(" Todos retreived : {0}", string.Join(",", myTodos.Select(s => s.TodoID.ToString())));
 
             return myTodos;
         }
@@ -75,9 +80,15 @@ namespace TodoTrackerData
 
                 logger.Info(" SQL command text for Adding a Record:{0}", commandText.ToString());
 
-                CommandDefinition sqlCommand = new CommandDefinition(commandText.ToString(), 
-                    new { Requester = newTodo.Requester, Assignee = newTodo.Assignee,
-                        DueDate = newTodo.DueDate, TodoDesc = newTodo.TodoDesc, isCompleted = 0 } );
+                CommandDefinition sqlCommand = new CommandDefinition(commandText.ToString(),
+                    new
+                    {
+                        Requester = newTodo.Requester,
+                        Assignee = newTodo.Assignee,
+                        DueDate = newTodo.DueDate,
+                        TodoDesc = newTodo.TodoDesc,
+                        isCompleted = 0
+                    });
 
 
 
@@ -102,7 +113,6 @@ namespace TodoTrackerData
                 //good practice to close your db connections
                 sqlConn.Close();
             }
-          
         }
 
         /// <summary>
@@ -114,8 +124,8 @@ namespace TodoTrackerData
         {
             try
             {
-             
-                 CommandDefinition sqlCommand = new CommandDefinition(@"DELETE FROM Todo WHERE TodoId = @TodoID", new { TodoID = TodoID });
+
+                CommandDefinition sqlCommand = new CommandDefinition(@"DELETE FROM Todo WHERE TodoId = @TodoID", new { TodoID = TodoID });
 
                 ValidateSQLConnection(sqlConn);
 
@@ -127,7 +137,7 @@ namespace TodoTrackerData
                     return true;
                 }
                 return false;
-                
+
             }
             catch (Exception ex)
             {
@@ -139,9 +149,6 @@ namespace TodoTrackerData
                 //good practice to close your db connections
                 sqlConn.Close();
             }
-            //the command succeeded
-
-            
         }
 
         /// <summary>
@@ -153,10 +160,10 @@ namespace TodoTrackerData
         {
             try
             {
-              
+
                 StringBuilder commandText = new StringBuilder();
-                commandText.Append("UPDATE Todo SET "); 
-                
+                commandText.Append("UPDATE Todo SET ");
+
                 commandText.Append(string.Format("Requester = @Requester, "));
                 commandText.Append(string.Format(" Assignee = @Assignee, "));
                 commandText.Append(string.Format(" DueDate = @DueDate, "));
@@ -185,7 +192,6 @@ namespace TodoTrackerData
                 //good practice to close your db connections
                 sqlConn.Close();
             }
-        
         }
 
         /// <summary>
@@ -197,7 +203,7 @@ namespace TodoTrackerData
         {
             try
             {
-     
+
                 CommandDefinition sqlCommand = new CommandDefinition(@"UPDATE Todo SET IsCompleted = 1 WHERE TodoId = @TodoID", new { TodoID = TodoID });
 
                 logger.Info("Completing :{0} with sql command of :{1}", TodoID, sqlCommand.CommandText);
@@ -226,16 +232,25 @@ namespace TodoTrackerData
                 //good practice to close your db connections
                 sqlConn.Close();
             }
-            
         }
 
+        /// <summary>
+        /// The DateTimeSQLite
+        /// </summary>
+        /// <param name="datetime">The <see cref="DateTime"/></param>
+        /// <returns>The <see cref="string"/></returns>
         private string DateTimeSQLite(DateTime datetime)
         {
             string dateTimeFormat = "{0}-{1}-{2} {3}:{4}:{5}.{6}";
             return string.Format(dateTimeFormat, datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second, datetime.Millisecond);
         }
 
-        private bool ValidateSQLConnection (IDbConnection sqlConn)
+        /// <summary>
+        /// The ValidateSQLConnection
+        /// </summary>
+        /// <param name="sqlConn">The <see cref="IDbConnection"/></param>
+        /// <returns>The <see cref="bool"/></returns>
+        private bool ValidateSQLConnection(IDbConnection sqlConn)
         {
 
             // Ensure we have a connection
@@ -252,8 +267,6 @@ namespace TodoTrackerData
             }
 
             return true;
-
         }
-
     }
 }

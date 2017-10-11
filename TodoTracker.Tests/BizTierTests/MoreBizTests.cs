@@ -1,34 +1,47 @@
-﻿using System;
-
-using Moq;
-using TodoTrackerData;
-using TodoTrackerBiz;
-using System.Collections.Generic;
-using TodoTrackerModels;
+﻿using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using TodoTrackerBiz;
+using TodoTrackerData;
+using TodoTrackerModels;
 
 namespace TodoTracker.Tests
 {
+    /// <summary>
+    /// Defines the <see cref="MoreBizTests" />
+    /// </summary>
     [TestFixture]
     public class MoreBizTests
     {
-
+        /// <summary>
+        /// Defines the _todoBiz
+        /// </summary>
         private ITodoService _todoBiz;
+
+        /// <summary>
+        /// Defines the _mockRepo
+        /// </summary>
         private Mock<ITodoRepo> _mockRepo;
 
+        /// <summary>
+        /// The Init
+        /// </summary>
         [SetUp]
         public void Init()
         {
-                 _mockRepo  = new Mock<ITodoRepo>(MockBehavior.Strict);
+            _mockRepo = new Mock<ITodoRepo>(MockBehavior.Strict);
         }
 
-
+        /// <summary>
+        /// The TestGetAllActiveTodos
+        /// </summary>
         [TestCase]
         public void TestGetAllActiveTodos()
         {
             List<Todo> mockedUpTodos = new List<Todo>();
 
-           // spawn off some Todos
+            // spawn off some Todos
             for (int i = 0; i < 5; i++)
             {
                 Todo t = new Todo()
@@ -49,18 +62,18 @@ namespace TodoTracker.Tests
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 5);
-
-           // mockRepo.VerifyAll();
-
         }
 
+        /// <summary>
+        /// The TestGetNoActiveTodos
+        /// </summary>
         [TestCase]
         public void TestGetNoActiveTodos()
         {
             List<Todo> mockedUpTodos = new List<Todo>();
 
             //spawn off some Todos
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
                 Todo t = new Todo()
                 {
@@ -80,13 +93,13 @@ namespace TodoTracker.Tests
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 0);
-
-           // mockRepo.VerifyAll();
-
         }
 
-
-
+        /// <summary>
+        /// The TestGetSingleTodo
+        /// </summary>
+        /// <param name="todoId">The <see cref="int"/></param>
+        /// <param name="expectedResult">The <see cref="int"/></param>
         [TestCase(2, 1)]
         public void TestGetSingleTodo(int todoId, int expectedResult)
         {
@@ -97,20 +110,17 @@ namespace TodoTracker.Tests
                 DueDate = DateTime.Now.ToShortDateString(),
                 Requester = "Alex",
                 TodoDesc = "stuff"
-                , TodoID = 1
-                };
-         
+                ,
+                TodoID = 1
+            };
+
 
             _mockRepo.Setup(mock => mock.GetSingleTodo(todoId)).Returns(t);
             _mockRepo.CallBase = false;
             _todoBiz = new TodoService(_mockRepo.Object);
             var result = _todoBiz.GetSingleTodo(todoId);
 
-           // Assert.That(result, Is.EqualTo(t));
-            Assert.IsTrue(result.TodoID  == expectedResult);
-
-            //mockRepo.VerifyAll();
-
+            Assert.IsTrue(result.TodoID == expectedResult);
         }
     }
 }
