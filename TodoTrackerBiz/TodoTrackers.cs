@@ -17,21 +17,23 @@ namespace TodoTrackerBiz
             _todoRepo = todoRepo;
         }
 
+        /// <summary>
+        /// Only get the Active Todos
+        /// </summary>
+        /// <returns></returns>
         public List<Todo> GetActiveTodos()
         {
             List<Todo> todos = new List<Todo>();
 
             try
             {
-                ITodoRepo todoRepo = new TodoRepo();
 
-                todos = todoRepo.GetAllTodos();
+                todos = _todoRepo.GetAllTodos();
 
                 //verify that there are some todos in the Database
                 if (!todos.Any())
                 {
-                    //TODO :)
-                    //Log that there are no todos in the database
+                    throw new Exception("No Active Records Found in the database");
 
                 }
 
@@ -54,9 +56,7 @@ namespace TodoTrackerBiz
 
             try
             {
-                ITodoRepo todoRepo = new TodoRepo();
-
-                retrievedTodo = todoRepo.GetSingleTodo(TodoID);
+                retrievedTodo = _todoRepo.GetSingleTodo(TodoID);
 
             }
             catch (Exception)
@@ -74,9 +74,8 @@ namespace TodoTrackerBiz
             bool result = false;
             try
             {
-                ITodoRepo todoRepo = new TodoRepo();
 
-                result = todoRepo.AddTodo(t);
+                result = _todoRepo.AddTodo(t);
 
             }
             catch (Exception)
@@ -94,9 +93,8 @@ namespace TodoTrackerBiz
 
             try
             {
-                ITodoRepo todoRepo = new TodoRepo();
 
-                result = todoRepo.Delete(TodoID);
+                result = _todoRepo.Delete(TodoID);
 
             }
             catch (Exception)
@@ -113,9 +111,8 @@ namespace TodoTrackerBiz
 
             try
             {
-                ITodoRepo todoRepo = new TodoRepo();
 
-                result = todoRepo.Update(t);
+                result = _todoRepo.Update(t);
 
 
             }
@@ -135,9 +132,8 @@ namespace TodoTrackerBiz
 
             try
             {
-                ITodoRepo todoRepo = new TodoRepo();
 
-                result = todoRepo.Complete(TodoID);
+                result = _todoRepo.Complete(TodoID);
 
             }
             catch (Exception)
